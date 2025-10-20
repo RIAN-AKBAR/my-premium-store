@@ -1,0 +1,48 @@
+{
+  "products": [
+    {
+      "id": "NET-001",
+      "name": "Netflix Premium",
+      "category": "streaming",
+      "price": 25000,
+      "duration": "1 Bulan",
+      "features": ["4 Screen", "Ultra HD", "No Buffering", "Garansi 30 Hari"],
+      "stock": 50,
+      "description": "Akun Netflix Premium shared quality terbaik",
+      "status": "active",
+      "created_at": "2024-01-20T10:00:00Z",
+      "updated_at": "2024-01-20T10:00:00Z"
+    },
+    {
+      "id": "SPOT-001",
+      "name": "Spotify Premium", 
+      "category": "music",
+      "price": 15000,
+      "duration": "1 Bulan",
+      "features": ["No Ads", "Download Music", "High Quality", "Family Plan"],
+      "stock": 100,
+      "description": "Spotify Premium Indonesia region",
+      "status": "active",
+      "created_at": "2024-01-20T10:00:00Z",
+      "updated_at": "2024-01-20T10:00:00Z"
+    },
+    {
+      "id": "CANV-001",
+      "name": "Canva Pro",
+      "category": "creative",
+      "price": 20000,
+      "duration": "Lifetime", 
+      "features": ["All Pro Features", "Premium Elements", "Magic Resize", "Background Remover"],
+      "stock": 25,
+      "description": "Canva Pro lifetime warranty",
+      "status": "active",
+      "created_at": "2024-01-20T10:00:00Z",
+      "updated_at": "2024-01-20T10:00:00Z"
+    }
+  ],
+  "metadata": {
+    "total_products": 3,
+    "last_updated": "2024-01-20T10:00:00Z",
+    "version": "1.0"
+  }
+}
