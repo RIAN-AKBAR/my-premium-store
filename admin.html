@@ -94,4 +94,1032 @@
         }
         
         .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #4a5568; font-size:
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #4a5568; font-size: 13px; }
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%; 
+            padding: 8px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 6px; 
+            font-size: 13px; 
+        }
+        
+        .alert { 
+            padding: 12px; 
+            border-radius: 6px; 
+            margin-bottom: 15px; 
+            font-weight: 500; 
+            font-size: 13px;
+        }
+        .alert-success { background: #f0fff4; border: 1px solid #9ae6b4; color: #2f855a; }
+        .alert-error { background: #fff5f5; border: 1px solid #fc8181; color: #c53030; }
+        .alert-warning { background: #fffaf0; border: 1px solid #faf089; color: #d69e2e; }
+        
+        .hidden { display: none; }
+        .loading { color: #667eea; text-align: center; padding: 15px; font-size: 14px; }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen">
+        <div class="login-card">
+            <h1>🔐 Admin Login</h1>
+            <p>Mohon Maaf Hanya Admin Yang Bisa Akses 🙏🙏</p>
+            <div class="form-group">
+                <label for="adminPassword">Password:</label>
+                <input type="password" id="adminPassword" placeholder="Masukkan password admin">
+            </div>
+            <button class="btn" onclick="login()">Login</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel">
+        <div class="container">
+            <div class="header">
+                <h1>🔧Selamat Datang Di Halaman Admin</h1>
+                <p>Kelola produk dan update harga</p>
+                <button class="btn btn-danger" onclick="logout()" style="margin-top: 10px;">Logout</button>
+            </div>
+
+            <!-- Alert Container -->
+            <div id="alertContainer"></div>
+
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>📦 Total Produk</h3>
+                    <p id="adminTotalProducts">-</p>
+                </div>
+                <div class="stat-card">
+                    <h3>👥 Total Pelanggan</h3>
+                    <p id="adminTotalCustomers">-</p>
+                </div>
+                <div class="stat-card">
+                    <h3>💰 Pendapatan</h3>
+                    <p id="adminTotalRevenue">-</p>
+                </div>
+                <div class="stat-card">
+                    <h3>📊 Total Orders</h3>
+                    <p id="adminTotalOrders">-</p>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('products')">📦 Produk</div>
+                <div class="tab" onclick="switchTab('orders')">📋 Orders</div>
+                <div class="tab" onclick="switchTab('settings')">⚙️ Settings</div>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="products-tab" class="tab-content active">
+                <div class="card">
+                    <div class="quick-actions">
+                        <button class="btn btn-success" onclick="showAddProductForm()">➕ Tambah Produk</button>
+                        <button class="btn" onclick="loadProductsData()">🔄 Refresh Data</button>
+                        <button class="btn btn-warning" onclick="addSampleProducts()">🎲 Tambah Sample</button>
+                    </div>
+                    
+                    <!-- Add Product Form -->
+                    <div id="addProductForm" class="hidden" style="margin-top: 15px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                        <h3 style="margin-bottom: 15px;">Tambah Produk Baru</h3>
+                        <form id="newProductForm">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div class="form-group">
+                                    <label for="productName">Nama Produk:*</label>
+                                    <input type="text" id="productName" required placeholder="Netflix Premium">
+                                </div>
+                                <div class="form-group">
+                                    <label for="productCategory">Kategori:*</label>
+                                    <select id="productCategory" required>
+                                        <option value="">Pilih Kategori</option>
+                                        <option value="streaming">Streaming</option>
+                                        <option value="music">Music</option>
+                                        <option value="productivity">Productivity</option>
+                                        <option value="creative">Creative</option>
+                                        <option value="social">Social Media</option>
+                                        <option value="gaming">Gaming</option>
+                                        <option value="learning">Learning</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="productPrice">Harga (Rp):*</label>
+                                    <input type="number" id="productPrice" required placeholder="25000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="productStock">Stock:*</label>
+                                    <input type="number" id="productStock" required placeholder="10">
+                                </div>
+                                <div class="form-group">
+                                    <label for="productDuration">Durasi:*</label>
+                                    <input type="text" id="productDuration" required placeholder="1 Bulan">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="productDescription">Deskripsi:</label>
+                                <textarea id="productDescription" rows="2" placeholder="Deskripsi singkat produk"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="productFeatures">Fitur (pisahkan koma):</label>
+                                <input type="text" id="productFeatures" placeholder="4K Quality, No Ads, Multi Device">
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="submit" class="btn btn-success">💾 Simpan ke GitHub</button>
+                                <button type="button" class="btn" onclick="hideAddProductForm()">Batal</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Products List -->
+                    <div style="margin-top: 15px;">
+                        <div id="productsLoading" class="loading">Memuat data produk dari GitHub...</div>
+                        <table class="data-table" id="productsTable" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Kategori</th>
+                                    <th>Harga</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                    <th style="width: 150px;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="orders-tab" class="tab-content">
+                <div class="card">
+                    <h2>📋 Kelola Orders</h2>
+                    <button class="btn" onclick="loadOrdersData()" style="margin-bottom: 15px;">🔄 Refresh Orders</button>
+                    
+                    <div id="ordersLoading" class="loading">Memuat data orders...</div>
+                    <table class="data-table" id="ordersTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Produk</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Tanggal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content">
+                <div class="card">
+                    <h2>⚙️ Konfigurasi GitHub</h2>
+                    <div class="form-group">
+                        <label for="githubUsername">GitHub Username:</label>
+                        <input type="text" id="githubUsername" value="RIAN-AKBAR" readonly style="background: #f0f0f0;">
+                    </div>
+                    <div class="form-group">
+                        <label for="githubRepo">Repository Name:</label>
+                        <input type="text" id="githubRepo" value="my-premium-store" readonly style="background: #f0f0f0;">
+                    </div>
+                    <div class="form-group">
+                        <label for="githubToken">GitHub Token:</label>
+                        <input type="password" id="githubToken" value="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" readonly style="background: #f0f0f0;">
+                        <small style="color: #666;">Token sudah terintegrasi dan siap digunakan</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Status Koneksi:</label>
+                        <div id="apiStatus" style="padding: 10px; border-radius: 5px; background: #e53e3e; color: white;">
+                            🔴 Testing Connection...
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="testGitHubConnection()">🔄 Test Connection</button>
+                </div>
+
+                <div class="card">
+                    <h2>🔗 Quick Links</h2>
+                    <div style="display: grid; gap: 10px;">
+                        <div>
+                            <strong>Halaman Pembeli:</strong> 
+                            <a href="index.html" target="_blank" style="color: #667eea;">Buka Toko</a>
+                        </div>
+                        <div>
+                            <strong>Data Produk:</strong> 
+                            <a href="https://raw.githubusercontent.com/RIAN-AKBAR/my-premium-store/main/databases/products.json" target="_blank" style="color: #667eea;">View JSON</a>
+                        </div>
+                        <div>
+                            <strong>Repository:</strong> 
+                            <a href="https://github.com/RIAN-AKBAR/my-premium-store" target="_blank" style="color: #667eea;">GitHub Repo</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div id="editProductModal" class="modal">
+        <div class="modal-content">
+            <h3>✏️ Edit Produk</h3>
+            <form id="editProductForm">
+                <input type="hidden" id="editProductId">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label for="editProductName">Nama Produk:</label>
+                        <input type="text" id="editProductName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductCategory">Kategori:</label>
+                        <select id="editProductCategory" required>
+                            <option value="streaming">Streaming</option>
+                            <option value="music">Music</option>
+                            <option value="productivity">Productivity</option>
+                            <option value="creative">Creative</option>
+                            <option value="social">Social Media</option>
+                            <option value="gaming">Gaming</option>
+                            <option value="learning">Learning</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductPrice">Harga (Rp):</label>
+                        <input type="number" id="editProductPrice" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductStock">Stock:</label>
+                        <input type="number" id="editProductStock" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductDuration">Durasi:</label>
+                        <input type="text" id="editProductDuration" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editProductDescription">Deskripsi:</label>
+                    <textarea id="editProductDescription" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editProductFeatures">Fitur:</label>
+                    <input type="text" id="editProductFeatures">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-success">💾 Update Produk</button>
+                    <button type="button" class="btn" onclick="closeEditModal()">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // GitHub Configuration - TOKEN SUDAH TERINTEGRASI
+        const GITHUB_CONFIG = {
+            username: 'RIAN-AKBAR',
+            repository: 'my-premium-store',
+            token: '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'
+        };
+
+        const ADMIN_PASSWORD = "admin123";
+        let isLoggedIn = false;
+        let productsData = [];
+        let ordersData = [];
+
+        // Check login
+        function checkLogin() {
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                showAdminPanel();
+            }
+        }
+
+        // Login
+        function login() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                isLoggedIn = true;
+                localStorage.setItem('adminLoggedIn', 'true');
+                showAdminPanel();
+                testGitHubConnection();
+            } else {
+                alert('Password salah!');
+            }
+        }
+
+        // Logout
+        function logout() {
+            isLoggedIn = false;
+            localStorage.removeItem('adminLoggedIn');
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        // Show admin panel
+        function showAdminPanel() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadAdminData();
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Test GitHub Connection
+        async function testGitHubConnection() {
+            const statusElement = document.getElementById('apiStatus');
+            statusElement.innerHTML = '🟡 Testing GitHub API...';
+            statusElement.style.background = '#ed8936';
+
+            try {
+                const response = await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/contents/databases/products.json`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    }
+                );
+
+                if (response.ok) {
+                    statusElement.innerHTML = '✅ Terhubung dengan GitHub API';
+                    statusElement.style.background = '#48bb78';
+                    showAlert('✅ Berhasil terhubung ke GitHub! Bisa upload/edit data.', 'success');
+                } else {
+                    throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('GitHub Connection Error:', error);
+                statusElement.innerHTML = '❌ Gagal terhubung ke GitHub';
+                statusElement.style.background = '#e53e3e';
+                showAlert('❌ Gagal terhubung: ' + error.message, 'error');
+            }
+        }
+
+        // Load admin data
+        async function loadAdminData() {
+            try {
+                await loadProductsData();
+                await loadOrdersData();
+                showAlert('✅ Data berhasil dimuat', 'success');
+            } catch (error) {
+                showAlert('⚠️ Gagal memuat beberapa data: ' + error.message, 'warning');
+            }
+        }
+
+        // Load products data
+        async function loadProductsData() {
+            try {
+                document.getElementById('productsLoading').innerHTML = 'Memuat data produk...';
+                
+                const response = await fetch(
+                    `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/main/databases/products.json?t=${Date.now()}`
+                );
+
+                if (!response.ok) {
+                    throw new Error('File produk tidak ditemukan');
+                }
+
+                const data = await response.json();
+                productsData = data.products || [];
+                displayProductsTable();
+                
+                document.getElementById('productsLoading').style.display = 'none';
+                document.getElementById('productsTable').style.display = 'table';
+                updateStats();
+                
+            } catch (error) {
+                console.error('Error loading products:', error);
+                document.getElementById('productsLoading').innerHTML = 
+                    '❌ Gagal memuat produk: ' + error.message;
+                productsData = [];
+                displayProductsTable();
+            }
+        }
+
+        // Load orders data
+        async function loadOrdersData() {
+            try {
+                document.getElementById('ordersLoading').innerHTML = 'Memuat data orders...';
+                
+                const response = await fetch(
+                    `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/main/databases/orders.json?t=${Date.now()}`
+                );
+
+                if (!response.ok) {
+                    ordersData = [];
+                    displayOrdersTable();
+                    return;
+                }
+
+                const data = await response.json();
+                ordersData = data.orders || [];
+                displayOrdersTable();
+                
+                document.getElementById('ordersLoading').style.display = 'none';
+                document.getElementById('ordersTable').style.display = 'table';
+                updateStats();
+                
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                ordersData = [];
+                document.getElementById('ordersLoading').innerHTML = 
+                    '❌ Gagal memuat orders: ' + error.message;
+                displayOrdersTable();
+            }
+        }
+
+        // Display products table dengan edit functionality
+        function displayProductsTable() {
+            const tbody = document.getElementById('productsTableBody');
+            
+            if (!productsData || productsData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Tidak ada produk. Tambah produk baru!</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = productsData.map(product => `
+                <tr>
+                    <td><strong>${product.name}</strong></td>
+                    <td>${product.category}</td>
+                    <td>Rp ${product.price.toLocaleString('id-ID')}</td>
+                    <td>${product.stock}</td>
+                    <td>
+                        <span style="padding: 4px 8px; border-radius: 12px; font-size: 11px; 
+                            background: ${product.status === 'active' ? '#48bb78' : '#e53e3e'}; color: white;">
+                            ${product.status || 'active'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-warning btn-small" onclick="editProduct('${product.id}')">✏️ Edit</button>
+                        <button class="btn btn-danger btn-small" onclick="deleteProduct('${product.id}')">🗑️ Hapus</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Display orders table
+        function displayOrdersTable() {
+            const tbody = document.getElementById('ordersTableBody');
+            
+            if (!ordersData || ordersData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Belum ada orders</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = ordersData.map(order => `
+                <tr>
+                    <td><strong>${order.order_id}</strong></td>
+                    <td>${order.product_name || order.product_id}</td>
+                    <td>${order.customer.name}<br><small>${order.customer.whatsapp}</small></td>
+                    <td>Rp ${order.total_amount.toLocaleString('id-ID')}</td>
+                    <td>
+                        <select onchange="updateOrderStatus('${order.order_id}', this.value)" 
+                                style="padding: 4px 8px; border-radius: 5px; border: 1px solid #ddd; font-size: 12px;">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
+                            <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
+                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </td>
+                    <td>${new Date(order.order_date).toLocaleDateString('id-ID')}</td>
+                    <td>
+                        <button class="btn btn-small" onclick="viewOrderDetails('${order.order_id}')">👁️ Detail</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('adminTotalProducts').textContent = productsData.length;
+            
+            const uniqueCustomers = new Set(ordersData.map(order => order.customer.whatsapp)).size;
+            document.getElementById('adminTotalCustomers').textContent = uniqueCustomers;
+            
+            const totalRevenue = ordersData
+                .filter(order => order.status === 'completed' || order.status === 'paid')
+                .reduce((sum, order) => sum + order.total_amount, 0);
+            document.getElementById('adminTotalRevenue').textContent = 'Rp ' + totalRevenue.toLocaleString('id-ID');
+            
+            document.getElementById('adminTotalOrders').textContent = ordersData.length;
+        }
+
+        // Show/hide add product form
+        function showAddProductForm() {
+            document.getElementById('addProductForm').classList.remove('hidden');
+        }
+
+        function hideAddProductForm() {
+            document.getElementById('addProductForm').classlist.add('hidden');
+            document.getElementById('newProductForm').reset();
+        }
+
+        // Handle new product form
+        document.getElementById('newProductForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await addNewProduct();
+        });
+
+        // Add new product
+        async function addNewProduct() {
+            const submitBtn = document.querySelector('#newProductForm button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '⏳ Menyimpan...';
+            submitBtn.disabled = true;
+
+            try {
+                const productData = {
+                    id: generateProductId(),
+                    name: document.getElementById('productName').value,
+                    category: document.getElementById('productCategory').value,
+                    price: parseInt(document.getElementById('productPrice').value),
+                    stock: parseInt(document.getElementById('productStock').value),
+                    duration: document.getElementById('productDuration').value,
+                    description: document.getElementById('productDescription').value,
+                    features: document.getElementById('productFeatures').value.split(',').map(f => f.trim()).filter(f => f),
+                    status: 'active',
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                };
+
+                // Get current products data from GitHub
+                const response = await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/contents/databases/products.json`,
+                    {
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    }
+                );
+
+                let currentData, sha;
+                if (response.ok) {
+                    const fileData = await response.json();
+                    const content = atob(fileData.content.replace(/\n/g, ''));
+                    currentData = JSON.parse(content);
+                    sha = fileData.sha;
+                } else {
+                    // Create new file if doesn't exist
+                    currentData = {
+                        products: [],
+                        metadata: {
+                            total_products: 0,
+                            last_updated: new Date().toISOString()
+                        }
+                    };
+                }
+
+                // Add new product
+                currentData.products.push(productData);
+                currentData.metadata.total_products = currentData.products.length;
+                currentData.metadata.last_updated = new Date().toISOString();
+
+                // Upload to GitHub
+                const updateResponse = await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/contents/databases/products.json`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.token}`,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify({
+                            message: `Tambah produk: ${productData.name}`,
+                            content: btoa(JSON.stringify(currentData, null, 2)),
+                            sha: sha
+                        })
+                    }
+                );
+
+                if (!updateResponse.ok) {
+                    const errorData = await updateResponse.json();
+                    throw new Error(errorData.message || 'Gagal menyimpan ke GitHub');
+                }
+
+                showAlert(`✅ Produk "${productData.name}" berhasil ditambahkan!`, 'success');
+                hideAddProductForm();
+                await loadProductsData(); // Reload data
+
+            } catch (error) {
+                console.error('Error adding product:', error);
+                showAlert(`❌ Gagal menambah produk: ${error.message}`, 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Generate product ID
+        function generateProductId() {
+            const category = document.getElementById('productCategory').value;
+            const prefix = category.toUpperCase().substring(0, 4);
+            const count = productsData.filter(p => p.category === category).length + 1;
+            return `${prefix}-${String(count).padStart(3, '0')}`;
+        }
+
+        // Edit product
+        function editProduct(productId) {
+            const product = productsData.find(p => p.id === productId);
+            if (!product) return;
+
+            // Fill form with product data
+            document.getElementById('editProductId').value = product.id;
+            document.getElementById('editProductName').value = product.name;
+            document.getElementById('editProductCategory').value = product.category;
+            document.getElementById('editProductPrice').value = product.price;
+            document.getElementById('editProductStock').value = product.stock;
+            document.getElementById('editProductDuration').value = product.duration;
+            document.getElementById('editProductDescription').value = product.description || '';
+            document.getElementById('editProductFeatures').value = product.features ? product.features.join(', ') : '';
+
+            // Show modal
+            document.getElementById('editProductModal').style.display = 'flex';
+        }
+
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('editProductModal').style.display = 'none';
+        }
+
+        // Handle edit form submission
+        document.getElementById('editProductForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await updateProduct();
+        });
+
+        // Update product
+        async function updateProduct() {
+            const productId = document.getElementById('editProductId').value;
+            const submitBtn = document.querySelector('#editProductForm button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '⏳ Menyimpan...';
+            submitBtn.disabled = true;
+
+            try {
+                // Get current data
+                const response = await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/contents/databases/products.json`,
+                    {
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Gagal mengambil data produk');
+                }
+
+                const fileData = await response.json();
+                const content = atob(fileData.content.replace(/\n/g, ''));
+                const currentData = JSON.parse(content);
+
+                // Find and update product
+                const productIndex = currentData.products.findIndex(p => p.id === productId);
+                if (productIndex === -1) {
+                    throw new Error('Produk tidak ditemukan');
+                }
+
+                currentData.products[productIndex] = {
+                    ...currentData.products[productIndex],
+                    name: document.getElementById('editProductName').value,
+                    category: document.getElementById('editProductCategory').value,
+                    price: parseInt(document.getElementById('editProductPrice').value),
+                    stock: parseInt(document.getElementById('editProductStock').value),
+                    duration: document.getElementById('editProductDuration').value,
+                    description: document.getElementById('editProductDescription').value,
+                    features: document.getElementById('editProductFeatures').value.split(',').map(f => f.trim()).filter(f => f),
+                    updated_at: new Date().toISOString()
+                };
+
+                currentData.metadata.last_updated = new Date().toISOString();
+
+                // Upload updated data
+                const updateResponse = await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/contents/databases/products.json`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.token}`,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify({
+                            message: `Edit produk: ${currentData.products[productIndex].name}`,
+                            content: btoa(JSON.stringify(currentData, null, 2)),
+                            sha: fileData.sha
+                        })
+                    }
+                );
+
+                if (!updateResponse.ok) {
+                    throw new Error('Gagal update produk di GitHub');
+                }
+
+                showAlert(`✅ Produk berhasil diupdate!`, 'success');
+                closeEditModal();
+                await loadProductsData(); // Reload data
+
+            } catch (error) {
+                console.error('Error updating product:', error);
+                showAlert(`❌ Gagal update produk: ${error.message}`, 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Delete product
+        async function deleteProduct(productId) {
+            const product = productsData.find(p => p.id === productId);
+            if (!product) return;
+
+            if (!confirm(`Yakin hapus produk "${product.name}"?`)) {
+                return;
+            }
+
+            try {
+                // Get current data
+                const response = await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/contents/databases/products.json`,
+                    {
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Gagal mengambil data produk');
+                }
+
+                const fileData = await response.json();
+                const content = atob(fileData.content.replace(/\n/g, ''));
+                const currentData = JSON.parse(content);
+
+                // Remove product
+                currentData.products = currentData.products.filter(p => p.id !== productId);
+                currentData.metadata.total_products = currentData.products.length;
+                currentData.metadata.last_updated = new Date().toISOString();
+
+                // Upload updated data
+                const updateResponse = await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/contents/databases/products.json`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.token}`,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify({
+                            message: `Hapus produk: ${product.name}`,
+                            content: btoa(JSON.stringify(currentData, null, 2)),
+                            sha: fileData.sha
+                        })
+                    }
+                );
+
+                if (!updateResponse.ok) {
+                    throw new Error('Gagal hapus produk di GitHub');
+                }
+
+                showAlert(`✅ Produk "${product.name}" berhasil dihapus!`, 'success');
+                await loadProductsData(); // Reload data
+
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                showAlert(`❌ Gagal hapus produk: ${error.message}`, 'error');
+            }
+        }
+
+        // Update order status
+        async function updateOrderStatus(orderId, newStatus) {
+            try {
+                // Get current orders data
+                const response = await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/contents/databases/orders.json`,
+                    {
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    }
+                );
+
+                let currentData, sha;
+                if (response.ok) {
+                    const fileData = await response.json();
+                    const content = atob(fileData.content.replace(/\n/g, ''));
+                    currentData = JSON.parse(content);
+                    sha = fileData.sha;
+                } else {
+                    currentData = { orders: [], metadata: { total_orders: 0, total_revenue: 0, last_updated: new Date().toISOString() } };
+                }
+
+                // Update order status
+                const orderIndex = currentData.orders.findIndex(order => order.order_id === orderId);
+                if (orderIndex !== -1) {
+                    currentData.orders[orderIndex].status = newStatus;
+                    currentData.orders[orderIndex].updated_at = new Date().toISOString();
+                }
+
+                currentData.metadata.last_updated = new Date().toISOString();
+
+                // Upload updated data
+                const updateResponse = await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/contents/databases/orders.json`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.token}`,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify({
+                            message: `Update status order: ${orderId} to ${newStatus}`,
+                            content: btoa(JSON.stringify(currentData, null, 2)),
+                            sha: sha
+                        })
+                    }
+                );
+
+                if (!updateResponse.ok) {
+                    throw new Error('Gagal update status order');
+                }
+
+                showAlert(`✅ Status order ${orderId} diupdate ke ${newStatus}`, 'success');
+                await loadOrdersData();
+
+            } catch (error) {
+                console.error('Error updating order status:', error);
+                showAlert(`❌ Gagal update status order: ${error.message}`, 'error');
+            }
+        }
+
+        // Add sample products
+        async function addSampleProducts() {
+            const sampleProducts = [
+                {
+                    id: 'YOUT-001',
+                    name: 'YouTube Premium',
+                    category: 'streaming',
+                    price: 30000,
+                    stock: 30,
+                    duration: '1 Bulan',
+                    description: 'YouTube Premium family plan',
+                    features: ['No Ads', 'Download Video', 'Background Play', 'YouTube Music'],
+                    status: 'active'
+                },
+                {
+                    id: 'DISC-001',
+                    name: 'Disney+ Hotstar',
+                    category: 'streaming', 
+                    price: 20000,
+                    stock: 40,
+                    duration: '1 Bulan',
+                    description: 'Disney+ Hotstar premium',
+                    features: ['All Content', '4K Quality', 'Multiple Devices', 'Indonesian Subs'],
+                    status: 'active'
+                }
+            ];
+
+            try {
+                // Get current data
+                const response = await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/contents/databases/products.json`,
+                    {
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    }
+                );
+
+                let currentData, sha;
+                if (response.ok) {
+                    const fileData = await response.json();
+                    const content = atob(fileData.content.replace(/\n/g, ''));
+                    currentData = JSON.parse(content);
+                    sha = fileData.sha;
+                } else {
+                    currentData = {
+                        products: [],
+                        metadata: {
+                            total_products: 0,
+                            last_updated: new Date().toISOString()
+                        }
+                    };
+                }
+
+                // Add sample products
+                sampleProducts.forEach(product => {
+                    if (!currentData.products.find(p => p.id === product.id)) {
+                        currentData.products.push({
+                            ...product,
+                            created_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString()
+                        });
+                    }
+                });
+
+                currentData.metadata.total_products = currentData.products.length;
+                currentData.metadata.last_updated = new Date().toISOString();
+
+                // Upload to GitHub
+                const updateResponse = await fetch(
+                    `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}/contents/databases/products.json`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.token}`,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify({
+                            message: 'Tambah sample products',
+                            content: btoa(JSON.stringify(currentData, null, 2)),
+                            sha: sha
+                        })
+                    }
+                );
+
+                if (!updateResponse.ok) {
+                    throw new Error('Gagal menambah sample products');
+                }
+
+                showAlert('✅ Sample products berhasil ditambahkan!', 'success');
+                await loadProductsData();
+
+            } catch (error) {
+                console.error('Error adding sample products:', error);
+                showAlert(`❌ Gagal menambah sample: ${error.message}`, 'error');
+            }
+        }
+
+        // Utility functions
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = message;
+            alertContainer.appendChild(alert);
+
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        function viewOrderDetails(orderId) {
+            const order = ordersData.find(o => o.order_id === orderId);
+            if (order) {
+                alert(`Detail Order:\n\nOrder ID: ${order.order_id}\nProduk: ${order.product_name}\nCustomer: ${order.customer.name}\nWhatsApp: ${order.customer.whatsapp}\nEmail: ${order.customer.email}\nTotal: Rp ${order.total_amount.toLocaleString('id-ID')}\nStatus: ${order.status}\nTanggal: ${new Date(order.order_date).toLocaleString('id-ID')}`);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', checkLogin);
+    </script>
+</body>
+</html>
